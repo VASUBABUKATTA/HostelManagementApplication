@@ -1,0 +1,96 @@
+package com.hostelManagementApplication.hostel.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.hostelManagementApplication.hostel.dto.HostlerDto;
+import com.hostelManagementApplication.hostel.serviceInterface.HostlerServiceInterface;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
+
+@RestController
+@RequestMapping("api/hostler")
+@CrossOrigin(origins="*")
+@Validated
+public class HostlerController {
+
+//	@GetMapping
+//	public String getAll()
+//	{
+//		return "coming soon";
+//	}
+//	
+//	@GetMapping("/get")
+//	public String getException()
+//	{
+//		throw new ResourceNotFoundException("you are too weak Now");
+//	}
+//	
+	
+	// serInterface :
+	
+	@Autowired
+	private HostlerServiceInterface service;
+	
+	
+	
+	// to get All Hostlers :
+	@GetMapping("/findAll")
+	public ResponseEntity<List<HostlerDto>> getAll()
+	{
+		
+		return service.getAll();
+	}
+	
+	// to get  Hostlers Data By Mobile No:
+		@GetMapping("/findByMobileNo/{mobileNo}")
+		public ResponseEntity<HostlerDto>  getHostlerByMobileNo(@PathVariable @Pattern(regexp = "^[6-9]{10}$", message = "Hostler mobile number must be 10 digits") String mobileNo )
+		{
+			
+			return service.getHostlerByMobileNo(mobileNo);
+		}
+	
+	
+	// to get All Hostler Data By Id:
+		@GetMapping("/findById/{id}")
+		public ResponseEntity<HostlerDto> getById(@PathVariable long id)
+		{
+			return service.getById(id);
+		}
+		
+	// to post or create a hostler 
+		@PostMapping("/createHostler")
+		public ResponseEntity<String> createHostler(@Valid @RequestBody HostlerDto hostlerDto)
+		{
+			return service.createHostler(hostlerDto);
+		}
+		
+		// to edita hostler with id
+		
+		@PutMapping("/editHostler/{id}")
+		public ResponseEntity<String> editHostler(@PathVariable long id ,@Valid @RequestBody HostlerDto hostlerDto)
+		{
+			return service.editHostlerById(id,hostlerDto);
+		}
+		
+		
+		// to delete a hostler
+		@DeleteMapping("/deleteHostler/{id}")
+		public ResponseEntity<String> deleteHostler(@PathVariable long id)
+			{
+					return service.deleteHostler(id);
+			}
+}

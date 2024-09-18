@@ -1,0 +1,232 @@
+package com.hostelManagementApplication.hostel.srrviceimplementation;
+
+
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.ReadOnlyProperty;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+//import com.fasterxml.jackson.databind.introspect.TypeResolutionContext.Empty;
+import com.hostelManagementApplication.hostel.dto.HostlerDto;
+import com.hostelManagementApplication.hostel.exception.DuplicateEntryException;
+import com.hostelManagementApplication.hostel.exception.ResourceNotFoundException;
+import com.hostelManagementApplication.hostel.model.Hostler;
+import com.hostelManagementApplication.hostel.repository.HostlerRepository;
+import com.hostelManagementApplication.hostel.serviceInterface.HostlerServiceInterface;
+
+@Service
+public class HostlerServiceImplementation implements HostlerServiceInterface {
+
+    @Autowired
+    private HostlerRepository hostlerRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Override
+    @ReadOnlyProperty
+    public ResponseEntity<List<HostlerDto>> getAll() {
+        List<Hostler> hostlers = hostlerRepository.findAll();
+        if(hostlers.isEmpty())
+        {
+        	// 404
+        	throw new ResourceNotFoundException("Hostlers Details are Not Existed");
+        }
+        List<HostlerDto> hostlerDtos = hostlers.stream()
+                .map(hostler -> modelMapper.map(hostler, HostlerDto.class))
+                .collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK).body(hostlerDtos);
+    }
+
+    @Override
+    @ReadOnlyProperty
+    public ResponseEntity<HostlerDto> getById(long id) {
+    	
+        Optional<Hostler> hostler = hostlerRepository.findById(id);
+        if (hostler.isEmpty()) {
+        	// 404
+            throw new ResourceNotFoundException("Provided Id Was Not Found");
+        }
+        HostlerDto hostlerDto = modelMapper.map(hostler.get(), HostlerDto.class);
+        return ResponseEntity.status(HttpStatus.OK).body(hostlerDto);
+    }
+
+    @Override
+    public ResponseEntity<String> createHostler(HostlerDto hostlerDto) {
+//        String name = hostlerDto.getHostlerName();
+        String mobile = hostlerDto.getHostlerMobile();
+//        Optional<Hostler> existingHostler = hostlerRepository.findByHostlerNameAndHostlerMobile(name, mobile);
+        Optional<Hostler> existingHostler = hostlerRepository.findByHostlerMobile(mobile);
+        if (existingHostler.isPresent()) {
+        	// 409
+            throw new DuplicateEntryException("Hostler with the provided details already exists");
+        }
+
+        Hostler hostler = modelMapper.map(hostlerDto, Hostler.class);
+        hostlerRepository.save(hostler);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Hostler created successfully");
+    }
+
+	@Override
+	public ResponseEntity<String> deleteHostler(long id) {
+		
+		 Optional<Hostler> hostler = hostlerRepository.findById(id);
+	        if (hostler.isEmpty()) {
+	        	// 404
+	            throw new ResourceNotFoundException("Provided Id Details are Not Existed");
+	        }
+	        else
+	        {
+	        	hostlerRepository.deleteById(id);
+	        	 return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Hostler Details are deleated succcessfully");
+	        }
+	        
+	}
+	
+	
+	@Override
+	public ResponseEntity<String> editHostlerById(long id, HostlerDto hostlerDto) {
+
+	    Optional<Hostler> hostler = hostlerRepository.findById(id);
+	    if (hostler.isEmpty()) {
+	    	// 404
+	        throw new ResourceNotFoundException("Provided Id Details are Not Existed");
+	    } else {
+	        Hostler existingHostler = hostler.get();
+	        
+	        // Check if the mobile number is changed
+	        if (!existingHostler.getHostlerMobile().equals(hostlerDto.getHostlerMobile())) {
+	            
+	            // Check if the new mobile number already exists in combination with other details
+	            String name = hostlerDto.getHostlerName();
+	            String mobile = hostlerDto.getHostlerMobile();
+	            String email = hostlerDto.getHostlerEmail();
+	            String address = hostlerDto.getHostlerAddress();
+	            
+	            Optional<Hostler> hostlerWithNewMobile = hostlerRepository.findByHostlerNameAndHostlerMobileAndHostlerAddressAndHostlerEmail(name, mobile, address, email);
+	            
+	            if (hostlerWithNewMobile.isPresent()) {
+	            	// 409
+	                throw new DuplicateEntryException("Provided mobile number and other details already exist");
+	            }
+	        }
+	        
+	        // Update the hostler details regardless of whether the mobile number is changed or not
+	        existingHostler.setHostlerAddress(hostlerDto.getHostlerAddress());
+	        existingHostler.setHostlerCollegeName(hostlerDto.getHostlerCollegeName());
+	        existingHostler.setHostlerEmail(hostlerDto.getHostlerEmail());
+	        existingHostler.setHostlerFatherName(hostlerDto.getHostlerFatherName());
+	        existingHostler.setHostlerMobile(hostlerDto.getHostlerMobile());
+	        existingHostler.setHostlerName(hostlerDto.getHostlerName());
+	        existingHostler.setHostel(hostlerDto.getHostel());
+	        existingHostler.setHostlerRoomNo(hostlerDto.getHostlerRoomNo());
+
+	        hostlerRepository.save(existingHostler);
+
+	        return ResponseEntity.status(HttpStatus.CREATED).body("Updated Successfully");
+	    }
+	}
+
+	@Override
+	public ResponseEntity<HostlerDto> getHostlerByMobileNo(String mobileNo) {
+		if(mobileNo == null)
+		{
+			throw new ResourceNotFoundException("Mobile Number is Empty");
+		}
+		else 
+		{
+			Optional<Hostler> hostler = hostlerRepository.findByHostlerMobile(mobileNo);
+			if(hostler.isEmpty())
+			{
+				throw new ResourceNotFoundException("Mobile number with the Provided data is not available");
+			}
+			else
+			{
+				 HostlerDto hostlerDto = modelMapper.map(hostler.get(), HostlerDto.class);
+			        return ResponseEntity.status(HttpStatus.OK).body(hostlerDto);
+				
+			}
+		}
+		
+	}
+
+	@Override
+	public ResponseEntity<HostlerDto> getHostlerByHostelName(String hostelName) {
+		if(hostelName == null)
+		{
+			throw new ResourceNotFoundException("hostelName Number is Empty");
+		}
+		else 
+		{
+			Optional<Hostler> hostler = hostlerRepository.findByHostelName(hostelName);
+			if(hostler.isEmpty())
+			{
+				throw new ResourceNotFoundException("Mobile number with the Provided data is not available");
+			}
+			else
+			{
+				 HostlerDto hostlerDto = modelMapper.map(hostler.get(), HostlerDto.class);
+			        return ResponseEntity.status(HttpStatus.OK).body(hostlerDto);
+				
+			}
+		}
+	}
+
+	
+
+//	@Override
+//	public ResponseEntity<String> editHostlerById(long id , HostlerDto hostlerDto) {
+//
+//		 Optional<Hostler> hostler = hostlerRepository.findById(id);
+//	        if (hostler.isEmpty()) {
+//	            throw new ResourceNotFoundException("Provided Id Details are Not Existed");
+//	        }
+//	        else
+//	        {
+//	        	Hostler existingHostler = hostler.get();
+//	        	if(existingHostler.getHostlerMobile() != hostlerDto.getHostlerMobile())
+//	        	{
+//	        		  String name = hostlerDto.getHostlerName();
+//	        	        String mobile = hostlerDto.getHostlerMobile();
+//	        	        String email = hostlerDto.getHostlerEmail();
+//	        	        String address = hostlerDto.getHostlerAddress();
+//	        	        
+//	        	        Optional<Hostler> hostler1 = hostlerRepository.findByHostlerNameAndHostlerMobileAndHostlerAddressAndHostlerEmail(name,mobile,address,email);
+//	        	        
+////	        	        Optional<Hostler> hostler1 = hostlerRepository.findByHostlerNameAndHostlerMobile(name,mobile);
+//	        		 if(hostler1.isEmpty())
+//	        		 {
+////	        			 existingHostler.setHostel(hostlerDto.getHostel());
+//	        			 existingHostler.setHostlerAddress(hostlerDto.getHostlerAddress());
+//	        			 existingHostler.setHostlerCollegeName(hostlerDto.getHostlerCollegeName());
+//	        			 existingHostler.setHostlerEmail(hostlerDto.getHostlerEmail());
+//	        			 existingHostler.setHostlerFatherName(hostlerDto.getHostlerFatherName());
+//	        			 existingHostler.setHostlerMobile(hostlerDto.getHostlerMobile());
+//	        			 existingHostler.setHostlerName(hostlerDto.getHostlerName());
+////	        			 existingHostler.setHostlerRoomNo(hostlerDto.getHostlerRoomNo());
+//	        			 
+//	        			 hostlerRepository.save(existingHostler);
+//	        			 
+//	        				return ResponseEntity.status(HttpStatus.CREATED).body("Updated Successfully existed hostler");
+//	        		 }
+//	        		 else
+//	        		 {
+//	        			 throw new ResourceNotFoundException("Provided Id Details are already existed");
+//	        		 }
+//	        	}
+////	        	else
+////	        	{
+////	        		return ResponseEntity.status(HttpStatus.CREATED).body("Updated Successfully existed hostler");
+////       		 	}
+//	        }
+//		return null;
+//	}
+}

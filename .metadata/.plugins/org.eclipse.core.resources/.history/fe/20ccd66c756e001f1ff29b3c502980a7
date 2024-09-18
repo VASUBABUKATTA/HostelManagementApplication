@@ -1,0 +1,137 @@
+package com.hostelManagementApplication.hostel.dto;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.hostelManagementApplication.hostel.model.Hostel;
+
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
+
+public class HostlerDto {
+	
+    private long hostlerId;
+    
+    @NotBlank(message = "MobileNumber cannot empty or null")
+    
+    private String hostlerMobile;
+    private String hostlerName;
+    private String hostlerEmail;
+    private String hostlerFatherName;
+    private String hostlerAddress;
+    private String hostlerCollegeName;
+    private String hostlerRoomNo;
+
+    @ManyToOne
+    @JoinColumn(name = "hostel_id")
+    @JsonBackReference
+    private Hostel hostel;
+
+//    @OneToMany(mappedBy = "hostler")
+//    @JsonBackReference
+//    private List<HostlerFee> hostlerFees;
+    
+//	public List<HostlerFee> getHostlerFees() {
+//		return hostlerFees;
+//	}
+//
+//	public void setHostlerFees(List<HostlerFee> hostlerFees) {
+//		this.hostlerFees = hostlerFees;
+//	}
+
+	public HostlerDto(long hostlerId, String hostlerMobile, String hostlerName, String hostlerEmail,
+			String hostlerFatherName, String hostlerAddress, String hostlerCollegeName, String hostlerRoomNo
+			,Hostel hostel
+			) {
+		super();
+		this.hostlerId = hostlerId;
+		this.hostlerMobile = hostlerMobile;
+		this.hostlerName = hostlerName;
+		this.hostlerEmail = hostlerEmail;
+		this.hostlerFatherName = hostlerFatherName;
+		this.hostlerAddress = hostlerAddress;
+		this.hostlerCollegeName = hostlerCollegeName;
+		this.hostlerRoomNo = hostlerRoomNo;
+		this.hostel = hostel;
+	}
+
+	public HostlerDto() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public long getHostlerId() {
+		return hostlerId;
+	}
+
+	public void setHostlerId(long hostlerId) {
+		this.hostlerId = hostlerId;
+	}
+
+	public String getHostlerMobile() {
+		return hostlerMobile;
+	}
+
+	public void setHostlerMobile(String hostlerMobile) {
+		this.hostlerMobile = hostlerMobile;
+	}
+
+	public String getHostlerName() {
+		return hostlerName;
+	}
+
+	public void setHostlerName(String hostlerName) {
+		this.hostlerName = hostlerName;
+	}
+
+	public String getHostlerEmail() {
+		return hostlerEmail;
+	}
+
+	public void setHostlerEmail(String hostlerEmail) {
+		this.hostlerEmail = hostlerEmail;
+	}
+
+	public String getHostlerFatherName() {
+		return hostlerFatherName;
+	}
+
+	public void setHostlerFatherName(String hostlerFatherName) {
+		this.hostlerFatherName = hostlerFatherName;
+	}
+
+	public String getHostlerAddress() {
+		return hostlerAddress;
+	}
+
+	public void setHostlerAddress(String hostlerAddress) {
+		this.hostlerAddress = hostlerAddress;
+	}
+
+	public String getHostlerCollegeName() {
+		return hostlerCollegeName;
+	}
+
+	public void setHostlerCollegeName(String hostlerCollegeName) {
+		this.hostlerCollegeName = hostlerCollegeName;
+	}
+
+	public String getHostlerRoomNo() {
+		return hostlerRoomNo;
+	}
+
+	public void setHostlerRoomNo(String hostlerRoomNo) {
+		this.hostlerRoomNo = hostlerRoomNo;
+	}
+
+	public Hostel getHostel() {
+		return hostel;
+	}
+
+	public void setHostel(Hostel hostel) {
+		this.hostel = hostel;
+	}
+
+   
+   
+
+}

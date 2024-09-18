@@ -1,0 +1,106 @@
+package com.hostelManagementApplication.hostel.dto;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.hostelManagementApplication.hostel.model.Hostel;
+
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+
+public class HostlerFeeDto {
+
+private long id;
+	
+	@NotBlank(message = "Hostler mobile number cannot be blank")
+	@Pattern(regexp = "(^[6-9][0-9]{9}$)", message = "Hostler mobile number must be 10 digits")
+	private String hostlerMobile;
+	private String hostlertEmail;
+	private String hostlerName;
+	private String hostlerRoomNo;
+	private String month;
+	private String paymentStatus;
+	private String amountToPay;
+	
+	 	@ManyToOne
+	    @JoinColumn(name = "hostel_id")
+	    @JsonBackReference
+	    private Hostel hostel;
+	
+//	@ManyToOne
+//	@JoinColumn(name = "hostler_id")
+//	private Hostler hostler;
+//	
+	
+	public Hostel getHostel() {
+			return hostel;
+		}
+		public void setHostel(Hostel hostel) {
+			this.hostel = hostel;
+		}
+	public long getId() {
+		return id;
+	}
+	public void setId(long id) {
+		this.id = id;
+	}
+	public String getHostlerMobile() {
+		return hostlerMobile;
+	}
+	public void setHostlerMobile(String hostlerMobile) {
+		this.hostlerMobile = hostlerMobile;
+	}
+	public String getHostlertEmail() {
+		return hostlertEmail;
+	}
+	public void setHostlertEmail(String hostlertEmail) {
+		this.hostlertEmail = hostlertEmail;
+	}
+	public String getHostlerName() {
+		return hostlerName;
+	}
+	public void setHostlerName(String hostlerName) {
+		this.hostlerName = hostlerName;
+	}
+	public String getHostlerRoomNo() {
+		return hostlerRoomNo;
+	}
+	public void setHostlerRoomNo(String hostlerRoomNo) {
+		this.hostlerRoomNo = hostlerRoomNo;
+	}
+	public String getMonth() {
+		return month;
+	}
+	public void setMonth(String month) {
+		this.month = month;
+	}
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
+	public String getAmountToPay() {
+		return amountToPay;
+	}
+	public void setAmountToPay(String amountToPay) {
+		this.amountToPay = amountToPay;
+	}
+	public HostlerFeeDto(long id, String hostlerMobile, String hostlertEmail, String hostlerName, String hostlerRoomNo,
+			String month, String paymentStatus, String amountToPay , Hostel hostel) {
+		super();
+		this.id = id;
+		this.hostlerMobile = hostlerMobile;
+		this.hostlertEmail = hostlertEmail;
+		this.hostlerName = hostlerName;
+		this.hostlerRoomNo = hostlerRoomNo;
+		this.month = month;
+		this.paymentStatus = paymentStatus;
+		this.amountToPay = amountToPay;
+		this.hostel = hostel;
+	}
+	public HostlerFeeDto() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+}

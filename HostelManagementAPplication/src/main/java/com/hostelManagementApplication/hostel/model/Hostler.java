@@ -1,0 +1,166 @@
+package com.hostelManagementApplication.hostel.model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "hostler")
+public class Hostler {
+
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long hostlerId;
+
+    private String hostlerMobile;
+    private String hostlerAltMobile;
+    
+    private String hostelName;
+
+	private String hostlerName;
+    private String hostlerEmail;
+    private String hostlerFatherName;
+    private String hostlerAddress;
+    private String hostlerCollegeName;
+    private String hostlerRoomNo;
+
+    @ManyToOne
+    @JoinColumn(name = "hostel_id")
+    private Hostel hostel;
+//    
+//    @OneToMany(mappedBy = "hostler")
+//    private List<HostlerFee> hostlerFees;
+
+    
+    
+//    public List<HostlerFee> getHostlerFees() {
+//		return hostlerFees;
+//	}
+//
+//	public void setHostlerFees(List<HostlerFee> hostlerFees) {
+//		this.hostlerFees = hostlerFees;
+//	}
+//	
+
+    
+
+	public String getHostlerAltMobile() {
+		return hostlerAltMobile;
+	}
+
+	public void setHostlerAltMobile(String hostlerAltMobile) {
+		this.hostlerAltMobile = hostlerAltMobile;
+	}
+	
+	
+	// Getters and Setters
+    public long getHostlerId() {
+        return hostlerId;
+    }
+
+    public void setHostlerId(long hostlerId) {
+        this.hostlerId = hostlerId;
+    }
+
+    public String getHostlerMobile() {
+        return hostlerMobile;
+    }
+
+    public void setHostlerMobile(String hostlerMobile) {
+        this.hostlerMobile = hostlerMobile;
+    }
+
+    public String getHostlerName() {
+        return hostlerName;
+    }
+
+    public void setHostlerName(String hostlerName) {
+        this.hostlerName = hostlerName;
+    }
+
+    public String getHostlerEmail() {
+        return hostlerEmail;
+    }
+
+    public void setHostlerEmail(String hostlerEmail) {
+        this.hostlerEmail = hostlerEmail;
+    }
+
+    public String getHostlerFatherName() {
+        return hostlerFatherName;
+    }
+
+    public void setHostlerFatherName(String hostlerFatherName) {
+        this.hostlerFatherName = hostlerFatherName;
+    }
+
+    public String getHostlerAddress() {
+        return hostlerAddress;
+    }
+
+    public void setHostlerAddress(String hostlerAddress) {
+        this.hostlerAddress = hostlerAddress;
+    }
+
+    public String getHostlerCollegeName() {
+        return hostlerCollegeName;
+    }
+
+    public void setHostlerCollegeName(String hostlerCollegeName) {
+        this.hostlerCollegeName = hostlerCollegeName;
+    }
+
+    public String getHostlerRoomNo() {
+        return hostlerRoomNo;
+    }
+
+    public void setHostlerRoomNo(String hostlerRoomNo) {
+        this.hostlerRoomNo = hostlerRoomNo;
+    }
+
+    public Hostel getHostel() {
+        return hostel;
+    }
+
+    public void setHostel(Hostel hostel) {
+        this.hostel = hostel;
+    }
+
+    
+    
+    // Constructors
+    
+
+    public String getHostelName() {
+		return hostelName;
+	}
+
+	public Hostler(long hostlerId, String hostlerMobile, String hostlerAltMobile, String hostelName, String hostlerName,
+			String hostlerEmail, String hostlerFatherName, String hostlerAddress, String hostlerCollegeName,
+			String hostlerRoomNo, Hostel hostel) {
+		super();
+		this.hostlerId = hostlerId;
+		this.hostlerMobile = hostlerMobile;
+		this.hostlerAltMobile = hostlerAltMobile;
+		this.hostelName = hostelName;
+		this.hostlerName = hostlerName;
+		this.hostlerEmail = hostlerEmail;
+		this.hostlerFatherName = hostlerFatherName;
+		this.hostlerAddress = hostlerAddress;
+		this.hostlerCollegeName = hostlerCollegeName;
+		this.hostlerRoomNo = hostlerRoomNo;
+		this.hostel = hostel;
+	}
+
+	public void setHostelName(String hostelName) {
+		this.hostelName = hostelName;
+	}
+
+	public Hostler() {
+        // Default constructor
+    }
+}

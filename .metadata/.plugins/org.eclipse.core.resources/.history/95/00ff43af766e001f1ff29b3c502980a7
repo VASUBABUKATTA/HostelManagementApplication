@@ -1,0 +1,32 @@
+package com.hostelManagementApplication.hostel.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+public class GlobalException 
+{
+	@ExceptionHandler(ResourceNotFoundException.class)
+//	@ResponseStatus(HttpStatus.CONFLICT)
+	public ResponseEntity<String> handleResourceNotFoundException (ResourceNotFoundException e)
+	{
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+	}
+	
+	@ExceptionHandler(DuplicateEntryException.class)
+//	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ResponseEntity<String> handleDuplicateEntryException (DuplicateEntryException e)
+	{
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+	}
+	
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        String errorMessage = ex.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+}
